@@ -9,12 +9,12 @@ import json
 import csv
 
 
-print("Loading function")
 s3_client = boto3.client('s3')
 
 def jsonToCsv(download_path, upload_path) :
    with open(download_path, 'r') as f:
        jsonData = json.load(f)
+       
    csvData = open(upload_path, 'w')
    csvwriter = csv.writer(csvData)
    count = 0
@@ -25,21 +25,20 @@ def jsonToCsv(download_path, upload_path) :
                 csvwriter.writerow(header)
                 count += 1
          csvwriter.writerow(data.values())
-   jsonData.close()
    csvData.close()
        
 def lambda_handler(event, context):
    for record in event['Records']:
        bucket = record['s3']['bucket']['name']
+       dest_bucket = 'atul-bucket-1-output-csv-files'
        key = record['s3']['object']['key'] 
-       print("bucket="+bucket)
-       print("key="+key)
 
-       download_path = '/tmp/download/{}'.format(key.split("/")[-1])
-       upload_path = '/tmp/upload/{}.csv'.format(key.split("/")[-1].split(".")[-2])
+       download_path = '/tmp/{}'.format(key.split("/")[-1])
+       
+       # derive upload path and destination bucket key
+       upload_path = '/tmp/{}.csv'.format(key.split("/")[-1].split(".")[-2])
+       dest_key = '{}.csv'.format(key.split("/")[-1].split(".")[-2])
+       
        s3_client.download_file(bucket, key, download_path)
        jsonToCsv(download_path, upload_path)
-       s3_client.upload_file(upload_path, 'bucket2', key)
-
-
-
+       s3_client.upload_file(upload_path, dest_bucket, dest_key)
