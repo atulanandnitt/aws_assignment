@@ -17,4 +17,4 @@ Step 2 : Whenever a new json files get copied in #atul-bucket-1-input-json-files
 
 Step3: with the help of function: jsonToCsv()  the json file get converted into csv.
 
-Step4: copy back this new csv file to bucket:  #atul-bucket-1-output-csv-files
+Step4: copy this new csv file to bucket:  #atul-bucket-1-output-csv-files
