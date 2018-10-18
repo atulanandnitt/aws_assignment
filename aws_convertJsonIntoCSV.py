@@ -11,6 +11,7 @@ import csv
 
 s3_client = boto3.client('s3')
 
+#convert json data into csv file
 def jsonToCsv(download_path, upload_path) :
    with open(download_path, 'r') as f:
        jsonData = json.load(f)
@@ -27,6 +28,8 @@ def jsonToCsv(download_path, upload_path) :
          csvwriter.writerow(data.values())
    csvData.close()
        
+
+      
 def lambda_handler(event, context):
    for record in event['Records']:
        bucket = record['s3']['bucket']['name']
